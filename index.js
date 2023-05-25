@@ -30,14 +30,7 @@ io.on("connection", (socket) => {
   socket.on("userInfo", (userInfo) => {
     console.log("userInfo -> ", userInfo);
 
-    all_users = [
-      ...all_users,
-      {
-        id: socket.id,
-        info: userInfo.loggingUserInfo,
-        userDeviceInfo: userInfo.loggingUserDeviceInfo,
-      },
-    ];
+    all_users = [...all_users, { id: socket.id, info: userInfo }];
 
     io.emit("activeUserInfo", all_users);
 
