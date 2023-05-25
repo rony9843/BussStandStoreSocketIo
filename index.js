@@ -20,10 +20,30 @@ app.get("/", (req, res) => {
   res.send("this is masum kaka socket io server");
 });
 
+let all_users = [];
+
 let orderItemList = [];
 
 // ? lets start
 io.on("connection", (socket) => {
+  // received user info
+  socket.on("userInfo", (userInfo) => {
+    console.log("userInfo -> ", userInfo);
+
+    all_users = [
+      ...all_users,
+      {
+        id: socket.id,
+        info: userInfo.loggingUserInfo,
+        userDeviceInfo: userInfo.loggingUserDeviceInfo,
+      },
+    ];
+
+    io.emit("activeUserInfo", all_users);
+
+    console.log("all users -> ", all_users);
+  });
+
   socket.on("newUser", (data) => {
     io.emit("messageResponse", data);
 
@@ -46,7 +66,11 @@ io.on("connection", (socket) => {
   });
 
   // disconnect
-  socket.on("disconnect", () => {});
+  socket.on("disconnect", () => {
+    all_users = all_users.filter((users) => users.id !== socket.id);
+    io.emit("activeUserInfo", all_users);
+    console.log("all users -> ", all_users);
+  });
 });
 
 http.listen(port, () => {
