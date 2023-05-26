@@ -37,6 +37,8 @@ io.on("connection", (socket) => {
     console.log("all users -> ", all_users);
   });
 
+  io.emit("useEffectUserInfoMessageResponse", all_users);
+
   socket.on("newUser", (data) => {
     io.emit("messageResponse", data);
 
